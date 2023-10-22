@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "bcb394ce-dce9-4481-9173-b8be3c58f764",
+		"name": "Project Bookshelf KSM API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30667864"
+	},
+	"item": [
+		{
+			"name": "Menambahkan Data Buku",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"pm.test('Response status code harus bernilai 201 value', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"})\r",
+							"\r",
+							"pm.test('response Content-Type header haru bernilai application/json value', () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus sebagai objek', () => {\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus memiliki properti dan nilai yang sesuai', () => {\r",
+							"    // Pengecekan status\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"\r",
+							"    // Pengecekan pesan\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Berhasil menambahkan buku');\r",
+							"\r",
+							"    // Pengecekan tipe data\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Algoritma dan Pemrograman\",\r\n    \"author\": \"Dzulfikri Adjmal\",\r\n    \"publisher\": \"UPNVJ\",\r\n    \"year\": 2022\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:9000/addBook"
+			},
+			"response": []
+		},
+		{
+			"name": "Mengambil Semua Data Buku",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code harus bernilai 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header harus bernilai application/json',() => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus bertipe object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus memiliki properti dan nilai yang sesuai', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"\r",
+							"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body data harus berisi setidaknya 1 item', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							"\r",
+							"    pm.expect(data).to.have.ownProperty('books');\r",
+							"    pm.expect(data.books).lengthOf.at.least(1);\r",
+							"    pm.environment.set('index', data.books.length - 1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:9000/getBooks"
+			},
+			"response": []
+		},
+		{
+			"name": "Mengubah Data Buku",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status harus bernilai 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header harus memiliki nilai aplication/json', () => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.equals(\"application/json; charset=utf-8\");\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus bertipe object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus memiliki properti dan nilai yang sesuai', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"\r",
+							"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Data buku berhasil diperbarui');\r",
+							"});\r",
+							"\r",
+							"pm.test('data harus terupdate', () => {\r",
+							"    const bookIndex = pm.environment.get('index');\r",
+							"    pm.sendRequest('http://localhost:9000/getBooks'), (error, response) => {\r",
+							"        if(!error) {\r",
+							"            pm.test('data buku harus berubah menjadi data terbaru', () => {\r",
+							"                const responseJson = response.json();\r",
+							"                const { data: { books }} = responseJson;\r",
+							"\r",
+							"                const expectedTitle = \"Algoritma Pemrograman Python\";\r",
+							"                const expectedAuthor = \"Moonlight\";\r",
+							"                const expectedPublisher = \"Malva\";\r",
+							"                const expedtedYear = 2023;\r",
+							"\r",
+							"                const {title, author, publisher, year} = books[bookIndex]\r",
+							"\r",
+							"                pm.expect(title).to.equals(expectedTitle);\r",
+							"                pm.expect(author).to.equals(expectedAuthor);\r",
+							"                pm.expect(publisher).to.equals(expectedPublisher);\r",
+							"                pm.expect(year).to.equals(expedtedYear);\r",
+							"            })\r",
+							"        }\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Algoritma Pemrograman Python\",\r\n    \"author\": \"Moonlight\",\r\n    \"publisher\": \"Malva\",\r\n    \"year\": 2023\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:9000/editBook/{{index}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Menghapus Data Buku",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code harus bernilai 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header harus bernilai application/json',() => {\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus bertipe object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body harus memiliki properti dan nilai yang sesuai', () => {\r",
+							"    const index = pm.environment.get('index');\r",
+							"    pm.sendRequest('http://localhost:9000/getBooks'), (error, response) => {\r",
+							"        if(!error){\r",
+							"            const responseJson = response.json();\r",
+							"            const {data: { books }} = responseJson;\r",
+							"\r",
+							"            const deletedBook = books[index];\r",
+							"\r",
+							"            pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"            pm.expect(responseJson.status).to.equals('success');\r",
+							"\r",
+							"            pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"            pm.expect(responseJson.message).to.equals(`Buku berjudul ${deletedBook.title} dihapus`)\r",
+							"\r",
+							"            pm.environment.set('index', index - 1);\r",
+							"        }\r",
+							"    }\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:9000/deleteBook/{{index}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "index",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

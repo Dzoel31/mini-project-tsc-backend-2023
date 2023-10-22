@@ -1,19 +1,15 @@
-// app.js
-const express = require('express');
-const bodyParser = require('body-parser');
-const libraryData = require('./data'); // Impor data dari data.js
-const app = express();
+const Hapi = require('@hapi/hapi');
+const routes = require('./src/routes');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const init = async () => {
+  const server = Hapi.server({
+    port: 9000,
+    host: 'localhost',
+  });
 
-// Endpoint untuk menambahkan buku
-app.get('/hello', (req, res) => {
-    res.json('Hello World');
- })
+  server.route(routes);
+  await server.start();
+  console.log(`Server berjalan pada ${server.info.uri}`);
+};
 
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server berjalan di port ${port}`);
-});
+init();
