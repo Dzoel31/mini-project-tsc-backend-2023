@@ -64,3 +64,17 @@ Anda akan membuat aplikasi sederhana yang memungkinkan Anda untuk melakukan oper
 4. **Hapus Buku**:
    - Endpoint: `DELETE /deleteBook/:index`
    - Deskripsi: Menghapus buku berdasarkan indeks (index) dari database.
+
+## Cara Menjalankan
+
+1. Clone Repositori ini
+2. Masuk ke direktori project
+3. Jalankan `npm run start` pada cmd
+4. Jalankan collection dan environment test
+
+   ```bash
+   newman run mini_project_API_Test.postman_collection.json --environment mini_project_API_Test.postman_environment.json
+   ```
+
+5. Jika gagal coba install newman terlebih dahulu dengan perintah
+`npm install newman`
